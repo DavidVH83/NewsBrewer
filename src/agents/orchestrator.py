@@ -12,6 +12,7 @@ Typical usage::
 """
 
 import asyncio
+from collections import defaultdict
 
 from src.agents.email_agent import EmailAgent
 from src.agents.manual_link_agent import ManualLinkAgent
@@ -106,6 +107,20 @@ class Orchestrator:
             if not digest_items:
                 logger.info("No relevant articles found today.")
                 return
+
+            # Limit to max 2 articles per source domain (keep highest scored).
+            max_per_domain = 2
+            domain_counts: dict[str, int] = defaultdict(int)
+            filtered_items = []
+            for item in digest_items:  # already sorted by score desc
+                if domain_counts[item.source] < max_per_domain:
+                    filtered_items.append(item)
+                    domain_counts[item.source] += 1
+            if len(filtered_items) < len(digest_items):
+                logger.info(
+                    "Capped per-domain: %d → %d items", len(digest_items), len(filtered_items)
+                )
+            digest_items = filtered_items
 
             if dry_run:
                 logger.info(

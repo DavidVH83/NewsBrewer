@@ -104,10 +104,11 @@ class GitHubModelsProvider:
             f"You are writing a daily AI newsletter in {language}.\n"
             "Write ONE flowing text of 400-600 words that covers all the articles below.\n"
             "The text should read as a coherent narrative, not as separate summaries.\n\n"
-            "Mark 2-3 key terms per article using this format: [[term|url]]\n"
-            "where term is the clickable word/phrase and url is the article URL.\n"
+            "Mark 2-3 key terms per article using this EXACT format: [[term|url]]\n"
+            "where term is the clickable word/phrase and url is the EXACT article URL from the input.\n"
             "Only mark genuinely important technical terms (model names, technique names, tool names).\n"
-            "Do NOT mark generic words like \"AI\" or \"article\".\n\n"
+            "Do NOT mark generic words like \"AI\" or \"article\".\n"
+            "IMPORTANT: Always close every marker with ]]. Never leave a marker unclosed.\n\n"
             "Output ONLY the narrative text with [[term|url]] markers. No headers, no bullets."
         )
 
@@ -125,7 +126,7 @@ class GitHubModelsProvider:
                     {"role": "user", "content": user_prompt},
                 ],
                 temperature=0.7,
-                max_tokens=1000,
+                max_tokens=1500,
             )
             content = response.choices[0].message.content
             if not content:
@@ -139,6 +140,9 @@ class GitHubModelsProvider:
     def _markers_to_html(text: str) -> str:
         """Convert [[term|url]] markers to <a href> links.
 
+        Also cleans up any unclosed markers (e.g. truncated by token limit)
+        by replacing them with just the term text.
+
         Args:
             text: Raw narrative text containing ``[[term|url]]`` markers.
 
@@ -147,8 +151,14 @@ class GitHubModelsProvider:
         """
         import re
 
-        return re.sub(
-            r"\[\[([^\]|]+)\|([^\]]+)\]\]",
+        # Convert well-formed [[term|url]] markers to links.
+        result = re.sub(
+            r"\[\[([^\]|]+)\|([^\]]*)\]\]",
             r'<a href="\2" style="color:#e94560;text-decoration:none;font-weight:bold;">\1</a>',
             text,
+            flags=re.DOTALL,
         )
+        # Remove any leftover unclosed [[term|url or [[term markers (truncated by token limit).
+        result = re.sub(r"\[\[([^\]|]*)\|[^\]]*$", r"\1", result, flags=re.DOTALL)
+        result = re.sub(r"\[\[([^\]]*)\]\]?", r"\1", result)
+        return result
