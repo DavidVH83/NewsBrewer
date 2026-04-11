@@ -1,0 +1,35 @@
+email_sources:
+  accounts:
+    - name: "Test Gmail"
+      imap_server: "imap.gmail.com"
+      imap_port: 993
+      email: "test@gmail.com"
+      app_password: "testpassword"
+  newsletter_senders:
+    - "noreply@medium.com"
+    - "test@newsletter.com"
+  manual_keyword: "BREW"
+
+ai_focus:
+  language: "en"
+  interesting_topics:
+    - "AI agents"
+    - "LLMs"
+  not_interesting_topics:
+    - "Marketing"
+  min_relevance_score: 6.0
+  highlight_courses: true
+
+delivery:
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_email: "test@gmail.com"
+  smtp_password: "testpassword"
+  send_to: "recipient@example.com"
+  max_articles: 10
+  schedule: "0 6 * * *"
+  timezone: "Europe/Brussels"
+
+model:
+  provider: "github_models"
+  name: "gpt-4o-mini"

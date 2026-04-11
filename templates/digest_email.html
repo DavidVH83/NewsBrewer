@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsBrewer Digest</title>
+</head>
+<body style="font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #2d3748;">
+  <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.12);">
+
+    <!-- ===== HEADER ===== -->
+    <div style="background: #1a1a2e; padding: 36px 30px; text-align: center;">
+      <h1 style="color: #e94560; margin: 0; font-size: 32px; letter-spacing: 1px;">🍺 NewsBrewer</h1>
+      <p style="color: #a0aec0; margin: 10px 0 0; font-size: 15px; letter-spacing: 0.5px;">
+        {{ date_str }} &nbsp;·&nbsp; {{ article_count }} article{% if article_count != 1 %}s{% endif %}
+      </p>
+    </div>
+
+    {% if courses %}
+    <!-- ===== COURSES & LEARNING RESOURCES ===== -->
+    <div style="padding: 28px 28px 8px;">
+      <h2 style="color: #2f855a; font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 2px solid #c6f6d5;">
+        🎓 COURSES &amp; LEARNING RESOURCES
+      </h2>
+
+      {% for item in courses %}
+      <!-- Course Card -->
+      <div style="background: #f0fff4; border: 1px solid #9ae6b4; border-left: 4px solid #38a169; border-radius: 6px; padding: 18px 20px; margin-bottom: 16px;">
+        <!-- Title -->
+        <a href="{{ item.url }}"
+           style="color: #276749; font-size: 17px; font-weight: 700; text-decoration: none; line-height: 1.4; display: block; margin-bottom: 6px;">
+          {{ item.title }}
+        </a>
+
+        <!-- Meta row -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="color: #68d391; font-size: 12px; font-weight: 600; background: #1c4532; padding: 2px 8px; border-radius: 10px;">
+            {{ item.source }}
+          </span>
+          <span style="color: #718096; font-size: 12px;">
+            Relevance: <strong style="color: #276749;">{{ "%.1f"|format(item.relevance_score) }}/10</strong>
+          </span>
+        </div>
+
+        <!-- Tags -->
+        {% if item.tags %}
+        <div style="margin-bottom: 10px;">
+          {% for tag in item.tags %}
+          <span style="display: inline-block; background: #c6f6d5; color: #276749; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 10px; margin: 2px 3px 2px 0; letter-spacing: 0.3px;">
+            {{ tag }}
+          </span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Summary -->
+        <p style="color: #4a5568; font-size: 14px; line-height: 1.65; margin: 0;">
+          {{ item.summary }}
+        </p>
+
+        <!-- Rating links -->
+        {% if github_repo %}
+        <div style="margin-top: 10px; font-size: 12px; color: #718096;">
+          Beoordeel dit artikel:
+          <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-good&body={{ item.url | urlencode }}&labels=rating"
+             style="color: #48bb78; text-decoration: none; margin-left: 8px;">👍 Goed</a>
+          <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-bad&body={{ item.url | urlencode }}&labels=rating"
+             style="color: #fc8181; text-decoration: none; margin-left: 8px;">👎 Niet relevant</a>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if narrative_html %}
+    <!-- ===== NARRATIVE + COMPACT INDEX ===== -->
+
+    <!-- Section heading -->
+    <div style="padding: 28px 28px 0;">
+      <h2 style="color: #2b6cb0; font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 0; padding-bottom: 10px; border-bottom: 2px solid #bee3f8;">
+        📰 TODAY'S DIGEST
+      </h2>
+    </div>
+
+    <!-- Flowing narrative -->
+    <div style="background:#ffffff;padding:30px 40px;font-size:16px;line-height:1.8;color:#2d3748;font-family:Georgia,serif;">
+      {{ narrative_html | safe }}
+    </div>
+
+    <!-- Compact article index -->
+    <div style="background:#f7fafc;padding:20px 40px 24px;">
+      <h3 style="color:#4a5568;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin:0 0 15px;">Bronartikelen</h3>
+      {% for item in all_items %}
+      {% if not item.is_course %}
+      <div style="padding:8px 0;border-bottom:1px solid #e2e8f0;overflow:hidden;">
+        <a href="{{ item.url }}" style="color:#2d3748;font-weight:bold;font-size:14px;text-decoration:none;">{{ item.title }}</a>
+        <span style="color:#718096;font-size:12px;margin-left:8px;">{{ item.source }} · {{ "%.1f"|format(item.relevance_score) }}</span>
+        {% if github_repo %}
+        <span style="float:right;font-size:12px;">
+          <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-good&body={{ item.url | urlencode }}&labels=rating" style="color:#48bb78;text-decoration:none;">👍</a>
+          <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-bad&body={{ item.url | urlencode }}&labels=rating" style="color:#fc8181;text-decoration:none;margin-left:8px;">👎</a>
+        </span>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- ===== FALLBACK: INDIVIDUAL ARTICLE CARDS ===== -->
+    <div style="padding: 28px 28px 8px;">
+      <h2 style="color: #2b6cb0; font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 2px solid #bee3f8;">
+        📰 TODAY'S ARTICLES
+      </h2>
+
+      {% if articles %}
+      {% for item in articles %}
+      <!-- Article Card -->
+      <div style="background: #f7f9fc; border: 1px solid #d1dce8; border-left: 4px solid #4299e1; border-radius: 6px; padding: 18px 20px; margin-bottom: 16px;">
+        <!-- Title -->
+        <a href="{{ item.url }}"
+           style="color: #1a365d; font-size: 17px; font-weight: 700; text-decoration: none; line-height: 1.4; display: block; margin-bottom: 6px;">
+          {{ item.title }}
+        </a>
+
+        <!-- Meta row -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px;">
+          <span style="color: #90cdf4; font-size: 12px; font-weight: 600; background: #1a365d; padding: 2px 8px; border-radius: 10px;">
+            {{ item.source }}
+          </span>
+          <span style="color: #718096; font-size: 12px;">
+            Relevance: <strong style="color: #2b6cb0;">{{ "%.1f"|format(item.relevance_score) }}/10</strong>
+          </span>
+        </div>
+
+        <!-- Tags -->
+        {% if item.tags %}
+        <div style="margin-bottom: 10px;">
+          {% for tag in item.tags %}
+          <span style="display: inline-block; background: #bee3f8; color: #2b6cb0; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 10px; margin: 2px 3px 2px 0; letter-spacing: 0.3px;">
+            {{ tag }}
+          </span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Summary -->
+        <p style="color: #4a5568; font-size: 14px; line-height: 1.65; margin: 0;">
+          {{ item.summary }}
+        </p>
+
+        <!-- Rating links -->
+        {% if github_repo %}
+        <div style="margin-top: 10px; font-size: 12px; color: #718096;">
+          Beoordeel dit artikel:
+          <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-good&body={{ item.url | urlencode }}&labels=rating"
+             style="color: #48bb78; text-decoration: none; margin-left: 8px;">👍 Goed</a>
+          <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-bad&body={{ item.url | urlencode }}&labels=rating"
+             style="color: #fc8181; text-decoration: none; margin-left: 8px;">👎 Niet relevant</a>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% else %}
+      <p style="color: #718096; font-size: 14px; font-style: italic; text-align: center; padding: 20px 0;">
+        No articles to display today.
+      </p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- ===== FOOTER ===== -->
+    <div style="background: #1a1a2e; padding: 24px 28px; text-align: center; margin-top: 12px;">
+      <p style="color: #718096; font-size: 12px; margin: 0 0 8px; line-height: 1.6;">
+        <strong style="color: #e94560;">NewsBrewer</strong>
+        &nbsp;·&nbsp;
+        Powered by GitHub Actions + GitHub Models
+      </p>
+      <p style="color: #718096; font-size: 11px; margin: 0; font-family: 'Courier New', monospace;">
+        Search your knowledge base: <span style="color: #a0aec0;">python search.py</span>
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

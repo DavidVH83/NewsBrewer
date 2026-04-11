@@ -1,0 +1,71 @@
+MIME-Version: 1.0
+Date: Wed, 09 Apr 2026 08:00:00 +0000
+Message-ID: <20260409080000.12345.abc@medium.com>
+From: Medium Daily Digest <noreply@medium.com>
+To: reader@example.com
+Subject: This week in AI: 5 articles you need to read
+Content-Type: multipart/alternative; boundary="===============boundary42=="
+
+--===============boundary42==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+This Week in AI
+===============
+
+Hello from Medium! Here are the top AI stories you should read this week.
+
+1. Claude 3.5 Sonnet Sets a New Benchmark
+   Anthropic released their latest model this week. Read the full breakdown:
+   https://anthropic.com/news/claude-3-5-sonnet
+
+2. Building Agentic Pipelines with LangGraph
+   A step-by-step guide to multi-agent workflows in production:
+   https://medium.com/towards-data-science/langgraph-agentic-pipelines-abc123
+
+3. RAG vs Fine-Tuning: Which Should You Use?
+   A practical comparison for real-world deployments:
+   https://medium.com/ml-practitioner/rag-vs-finetuning-def456
+
+4. The Rise of MCP: Model Context Protocol Explained
+   Everything developers need to know about Anthropic's open standard:
+   https://medium.com/ai-engineering/mcp-explained-ghi789
+
+Happy reading,
+The Medium Team
+
+--===============boundary42==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<head><title>This week in AI</title></head>
+<body>
+  <h1>This Week in AI</h1>
+  <p>Hello from Medium! Here are the top AI stories you should read this week.</p>
+
+  <h2>1. Claude 3.5 Sonnet Sets a New Benchmark</h2>
+  <p>Anthropic released their latest model this week.</p>
+  <p><a href="https://anthropic.com/news/claude-3-5-sonnet">Read the full breakdown</a></p>
+
+  <h2>2. Building Agentic Pipelines with LangGraph</h2>
+  <p>A step-by-step guide to multi-agent workflows in production.</p>
+  <p><a href="https://medium.com/towards-data-science/langgraph-agentic-pipelines-abc123">Read article</a></p>
+
+  <h2>3. RAG vs Fine-Tuning: Which Should You Use?</h2>
+  <p>A practical comparison for real-world deployments.</p>
+  <p><a href="https://medium.com/ml-practitioner/rag-vs-finetuning-def456">Read article</a></p>
+
+  <h2>4. The Rise of MCP: Model Context Protocol Explained</h2>
+  <p>Everything developers need to know about Anthropic's open standard.</p>
+  <p><a href="https://medium.com/ai-engineering/mcp-explained-ghi789">Read article</a></p>
+
+  <p style="font-size:small;">
+    <a href="https://medium.com/unsubscribe?token=abc">Unsubscribe</a> |
+    <a href="https://medium.com/email-preferences">Manage preferences</a>
+  </p>
+</body>
+</html>
+
+--===============boundary42==--

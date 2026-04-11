@@ -1,0 +1,79 @@
+name: Rate Article
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  rate:
+    # Only run if issue title starts with "rate-"
+    if: startsWith(github.event.issue.title, 'rate-')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download latest knowledge base
+        uses: actions/download-artifact@v4
+        with:
+          name: knowledge-base
+          path: data/
+        continue-on-error: true  # OK if no artifact yet
+
+      - name: Parse issue and save rating
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python - <<'EOF'
+          import os, re, subprocess
+          title = os.environ['ISSUE_TITLE']
+          body = os.environ['ISSUE_BODY']
+
+          # Extract rating from title: "rate-good" or "rate-bad"
+          rating = 'good' if 'good' in title.lower() else 'bad'
+
+          # Extract URL from body (first line)
+          url = body.strip().split('\n')[0].strip()
+
+          if url.startswith('http'):
+              subprocess.run(['python', 'rate_article.py', '--url', url, '--rating', rating], check=True)
+              print(f"Saved rating={rating} for {url}")
+          else:
+              print(f"No valid URL found in issue body: {body[:100]}")
+          EOF
+
+      - name: Upload updated knowledge base
+        uses: actions/upload-artifact@v4
+        with:
+          name: knowledge-base
+          path: data/knowledge_base.db
+          retention-days: 90
+        continue-on-error: true
+
+      - name: Close issue with comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.issue.title;
+            const rating = title.includes('good') ? '👍 Goed' : '👎 Niet relevant';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `✅ Rating opgeslagen: **${rating}**\n\nBedankt voor je feedback! De AI past zijn aanbevelingen aan op basis van jouw beoordeling.`
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              state: 'closed'
+            });

@@ -1,0 +1,43 @@
+name: NewsBrewer Daily Digest
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 06:00 UTC daily (configurable)
+  workflow_dispatch:      # Manual trigger for testing
+
+jobs:
+  brew:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run NewsBrewer
+        env:
+          ACCOUNT_1_EMAIL: ${{ secrets.ACCOUNT_1_EMAIL }}
+          ACCOUNT_1_PASSWORD: ${{ secrets.ACCOUNT_1_PASSWORD }}
+          ACCOUNT_2_EMAIL: ${{ secrets.ACCOUNT_2_EMAIL }}
+          ACCOUNT_2_PASSWORD: ${{ secrets.ACCOUNT_2_PASSWORD }}
+          SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          DIGEST_RECIPIENT: ${{ secrets.DIGEST_RECIPIENT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python main.py
+
+      - name: Upload knowledge base
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: knowledge-base
+          path: data/knowledge_base.db
+          retention-days: 90

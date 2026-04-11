@@ -1,0 +1,61 @@
+# ============================================================
+# NEWSBREWER CONFIGURATION
+# Copy to config.yml — never commit config.yml to GitHub
+# ============================================================
+
+email_sources:
+  accounts:
+    - name: "My Gmail"
+      imap_server: "imap.gmail.com"
+      imap_port: 993
+      email: ""          # Set as ACCOUNT_1_EMAIL in .env
+      app_password: ""   # Set as ACCOUNT_1_PASSWORD in .env
+
+    - name: "My Outlook"
+      imap_server: "outlook.office365.com"
+      imap_port: 993
+      email: ""          # Set as ACCOUNT_2_EMAIL in .env
+      app_password: ""   # Set as ACCOUNT_2_PASSWORD in .env
+
+  newsletter_senders:
+    - "noreply@medium.com"
+    - "hello@agenticengineering.com"
+    - "noreply@anthropic.com"
+    - "support@datacamp.com"
+
+  manual_keyword: "BREW"
+
+ai_focus:
+  language: "en"
+
+  interesting_topics:
+    - "AI agents and agentic systems"
+    - "LLMs, RAG, fine-tuning, prompt engineering"
+    - "New AI developer tools and frameworks"
+    - "AI courses and learning resources"
+    - "MCP, context engineering, AI infrastructure"
+
+  not_interesting_topics:
+    - "Marketing without technical depth"
+    - "No-code website builders"
+    - "Company stock prices and earnings"
+
+  min_relevance_score: 6.0
+  highlight_courses: true
+
+delivery:
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_email: ""        # Set as SMTP_EMAIL in .env
+  smtp_password: ""     # Set as SMTP_PASSWORD in .env
+  send_to: ""           # Set as DIGEST_RECIPIENT in .env
+  max_articles: 10
+  schedule: "0 6 * * *"
+  timezone: "Europe/Brussels"
+  github_repo: ""  # Set as GITHUB_REPO in .env (format: owner/repo)
+
+model:
+  provider: "github_models"
+  name: "gpt-4o-mini"
+  # Token auto-available as GITHUB_TOKEN in GitHub Actions
+  # For local testing: set GITHUB_TOKEN in .env

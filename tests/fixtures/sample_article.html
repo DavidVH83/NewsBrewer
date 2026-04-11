@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding RAG: A Complete Guide for Developers</title>
+  <style>
+    /* This entire style block should be stripped by the fetcher. */
+    body { font-family: Georgia, serif; margin: 0; }
+    nav  { background: #333; color: #fff; }
+    .ad-banner { display: none; }
+  </style>
+  <script>
+    // This script block should be stripped by the fetcher.
+    window.__analyticsToken = "abc123";
+    console.log("tracking init");
+  </script>
+</head>
+<body>
+
+  <!-- =====================================================================
+       NOISE: Header & Navigation (should be stripped)
+  ====================================================================== -->
+  <header id="site-header">
+    <div class="nav-logo">NewsBrewer Blog</div>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/technology">Technology</a></li>
+        <li><a href="/ai">AI</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- =====================================================================
+       NOISE: Advertisement banner (should be stripped)
+  ====================================================================== -->
+  <div class="ad-banner" id="top-advertisement">
+    <p>Sponsored: Try CloudAI Pro — 30 days free!</p>
+    <img src="https://ads.example.com/cloudai.png" alt="ad" />
+  </div>
+
+  <!-- =====================================================================
+       NOISE: Sidebar (should be stripped)
+  ====================================================================== -->
+  <aside class="sidebar" id="sidebar-recommendations">
+    <h3>You Might Also Like</h3>
+    <ul>
+      <li><a href="/articles/llm-basics">LLM Basics</a></li>
+      <li><a href="/articles/vector-db">Vector Databases 101</a></li>
+    </ul>
+    <div class="ad advertisement">
+      <p>ADVERTISEMENT: Buy our course!</p>
+    </div>
+  </aside>
+
+  <!-- =====================================================================
+       NOISE: Cookie banner (should be stripped)
+  ====================================================================== -->
+  <div id="cookie-popup" class="cookie popup">
+    <p>We use cookies to improve your experience. <button>Accept</button></p>
+  </div>
+
+  <!-- =====================================================================
+       MAIN ARTICLE CONTENT (should be preserved)
+  ====================================================================== -->
+  <article id="main-article">
+    <header class="article-header">
+      <h1>Understanding RAG: A Complete Guide for Developers</h1>
+      <p class="byline">By Jane Smith · Published April 9, 2026 · 12 min read</p>
+      <img
+        src="https://cdn.example.com/rag-hero.jpg"
+        alt="Diagram of a Retrieval-Augmented Generation pipeline"
+        width="800"
+        height="400"
+      />
+    </header>
+
+    <section class="article-body">
+      <p>
+        Retrieval-Augmented Generation, universally abbreviated as RAG, has rapidly become one
+        of the most important architectural patterns in modern AI engineering. If you have spent
+        any time building applications on top of large language models, you have almost certainly
+        encountered the core limitation that RAG is designed to solve: language models are frozen
+        in time. They know only what was in their training data, and that data has a cutoff date.
+        Ask a model about something that happened after that cutoff and it will either hallucinate
+        confidently or honestly admit ignorance.
+      </p>
+
+      <p>
+        RAG sidesteps this problem elegantly. Instead of retraining the model every time the world
+        changes, you keep an external knowledge base that is always up to date, retrieve the most
+        relevant documents at query time, and pass those documents to the language model as context.
+        The model then synthesises an answer grounded in real, current information rather than its
+        potentially stale parametric memory. The result feels almost magical: a system that is both
+        highly knowledgeable and reliably accurate, without the enormous cost of continuous
+        fine-tuning.
+      </p>
+
+      <h2>The Three Pillars of a RAG System</h2>
+
+      <p>
+        Every production RAG system rests on three pillars: ingestion, retrieval, and generation.
+        Understanding each pillar in depth is essential before writing a single line of code,
+        because architectural mistakes made early are expensive to unwind later.
+      </p>
+
+      <h3>Pillar 1: Ingestion</h3>
+
+      <p>
+        Ingestion is the process of taking raw source material, such as PDF documents, web pages,
+        database records, or plain text files, and converting it into a form that a retrieval
+        system can query efficiently. The dominant approach today is dense vector retrieval, which
+        means you pass each chunk of text through an embedding model to obtain a high-dimensional
+        numerical representation, then store those vectors in a specialised vector database.
+      </p>
+
+      <p>
+        Chunking strategy is one of the most underappreciated design decisions in a RAG pipeline.
+        If your chunks are too large, each vector represents so much content that it becomes
+        semantically diffuse, and retrieval precision suffers. If chunks are too small, a single
+        retrieved snippet may lack enough context for the language model to produce a useful
+        response. A common heuristic is to use chunks of 256 to 512 tokens with a 10 to 20 percent
+        overlap between adjacent chunks, ensuring that sentences and paragraphs are not split
+        awkwardly at boundaries.
+      </p>
+
+      <p>
+        Metadata enrichment during ingestion pays dividends later. Attach source URLs, publication
+        dates, document titles, and author names to each chunk as metadata fields. Many vector
+        databases support metadata filtering, which allows you to narrow retrieval to documents
+        published within a specific date range or from a trusted source, dramatically improving
+        result quality in domain-specific applications.
+      </p>
+
+      <h3>Pillar 2: Retrieval</h3>
+
+      <p>
+        Retrieval is the heart of a RAG system. When a user submits a query, you embed that query
+        using the same embedding model used during ingestion, then perform an approximate nearest-
+        neighbour search in the vector database to find the chunks whose vectors are closest to the
+        query vector. The top k results, typically between three and ten chunks, are then assembled
+        into a context window that will be passed to the language model.
+      </p>
+
+      <p>
+        Pure dense retrieval is powerful but not perfect. It excels at capturing semantic
+        similarity but can miss exact keyword matches that sparse retrieval methods like BM25
+        handle well. Hybrid retrieval, which combines dense and sparse scores using a reciprocal
+        rank fusion algorithm, typically outperforms either approach alone. Many modern retrieval
+        libraries, including LlamaIndex and LangChain, support hybrid retrieval out of the box,
+        so you rarely need to implement it from scratch.
+      </p>
+
+      <p>
+        Re-ranking is a powerful second-stage technique. After retrieving the top 20 or 50
+        candidates with fast approximate search, you pass those candidates through a smaller,
+        more accurate cross-encoder model that scores each candidate against the original query.
+        The top k after re-ranking are far more likely to be genuinely relevant than the top k
+        from the initial retrieval alone. The latency cost is modest because re-ranking operates
+        on a small, pre-filtered set of documents rather than the full corpus.
+      </p>
+
+      <h3>Pillar 3: Generation</h3>
+
+      <p>
+        Generation is where the language model earns its keep. You construct a prompt that includes
+        the retrieved context, the user's original question, and any system-level instructions that
+        define the model's persona and output format. The model reads all of this and produces a
+        final answer. At its best, the model will synthesise information across multiple retrieved
+        chunks, reconcile contradictions, and express the result in fluent natural language.
+      </p>
+
+      <p>
+        Prompt engineering for RAG deserves its own article, but a few principles are worth
+        stating here. First, always instruct the model to cite which sources it used. Citations
+        allow users to verify claims and build trust in the system. Second, tell the model
+        explicitly to answer only from the provided context, and to say "I don't know" if the
+        context does not contain the information needed. Without this instruction, models will
+        happily blend retrieved facts with parametric knowledge, making it impossible to audit
+        where any given statement came from. Third, structure the context carefully. If you have
+        retrieved chunks from multiple documents, label each chunk with its source so the model
+        can attribute information correctly.
+      </p>
+
+      <h2>Choosing a Vector Database</h2>
+
+      <p>
+        The vector database market has exploded in recent years. Purpose-built options such as
+        Pinecone, Weaviate, Qdrant, and Chroma each have different trade-offs in terms of
+        scalability, cost, ease of use, and support for hybrid retrieval. If your organisation
+        already runs PostgreSQL, the pgvector extension is an attractive option because it
+        eliminates the need for a separate infrastructure component. For very large corpora, a
+        managed service like Pinecone or a self-hosted Weaviate cluster will provide better
+        query throughput and recall than pgvector at scale.
+      </p>
+
+      <p>
+        Benchmark your specific workload before committing to a vector database. Latency and
+        recall numbers from published benchmarks rarely translate directly to production
+        performance because they depend heavily on embedding dimensionality, index configuration,
+        hardware, and the statistical distribution of your data. Most major vector databases offer
+        free tiers or local Docker images, so it is straightforward to run your own evaluation
+        before making an architectural commitment.
+      </p>
+
+      <h2>Evaluating RAG Quality</h2>
+
+      <p>
+        Evaluation is where many RAG projects struggle. It is easy to build a RAG system that
+        feels impressive in informal demos but performs poorly on a rigorous benchmark. Systematic
+        evaluation requires a labelled dataset of question-answer pairs, ideally sourced from real
+        user queries against your knowledge base. For each question, you need to know the correct
+        answer and ideally which source documents support that answer.
+      </p>
+
+      <p>
+        The RAGAS framework provides a suite of metrics specifically designed for RAG evaluation.
+        Faithfulness measures whether the generated answer is grounded in the retrieved context.
+        Answer relevancy measures whether the answer actually addresses the question. Context
+        recall measures whether the retrieved documents contain the information needed to answer
+        the question. Running all three metrics across a representative evaluation set gives a
+        multidimensional view of system quality that is far more informative than a single
+        accuracy number.
+      </p>
+
+      <h2>Advanced Techniques</h2>
+
+      <p>
+        Once your baseline RAG system is working well, a number of advanced techniques can push
+        quality higher. Query expansion generates multiple paraphrases of the user's question and
+        retrieves documents for each, then deduplicates and merges the results. This helps when
+        users phrase questions in unusual ways that do not closely match the language used in
+        source documents.
+      </p>
+
+      <p>
+        Hypothetical document embeddings, or HyDE, take a different approach. Instead of
+        embedding the user's question directly, you ask the language model to generate a
+        hypothetical answer to the question, then embed that hypothetical answer and use it as the
+        retrieval query. Because the hypothetical answer is phrased in the same style as actual
+        documents in your corpus, it often retrieves more relevant results than the raw question.
+      </p>
+
+      <p>
+        Agentic RAG is the frontier of current research. Rather than performing a single
+        retrieval step, an agentic system uses the language model as an orchestrator that
+        decides when to retrieve, what to retrieve, and how to combine information across multiple
+        retrieval steps. This approach can handle complex, multi-hop questions that require
+        synthesising information from documents that are not directly related to each other. The
+        trade-off is additional latency and complexity, so agentic approaches are best reserved
+        for use cases where quality matters more than response time.
+      </p>
+
+      <h2>Conclusion</h2>
+
+      <p>
+        RAG is not a silver bullet. It introduces new failure modes — poor chunking, low-quality
+        embeddings, insufficient retrieval depth — and it shifts the bottleneck from model
+        capability to data quality and retrieval design. But for the vast majority of enterprise
+        AI applications, where knowledge must be current and answers must be traceable to sources,
+        RAG is the right architectural choice. Start with a simple pipeline, measure rigorously,
+        and iterate. The techniques covered in this guide will carry you from prototype to
+        production.
+      </p>
+
+      <p>
+        If you found this guide useful, consider subscribing to the NewsBrewer newsletter, where
+        we distil the week's most important AI engineering articles into a concise, actionable
+        digest delivered every Friday morning.
+      </p>
+    </section>
+
+    <footer class="article-footer">
+      <p>Tags:
+        <a href="/tag/ai">AI</a>,
+        <a href="/tag/rag">RAG</a>,
+        <a href="/tag/llm">LLM</a>
+      </p>
+    </footer>
+  </article>
+
+  <!-- =====================================================================
+       NOISE: Footer (should be stripped)
+  ====================================================================== -->
+  <footer id="site-footer">
+    <nav class="footer-menu">
+      <ul>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Service</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 NewsBrewer. All rights reserved.</p>
+  </footer>
+
+  <!-- =====================================================================
+       NOISE: Popup / menu overlay (should be stripped)
+  ====================================================================== -->
+  <div class="popup-menu" id="menu-overlay" style="display:none;">
+    <button class="close-menu">&#x2715;</button>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/signin">Sign In</a>
+    </nav>
+  </div>
+
+  <script>
+    // Another script block to strip.
+    document.addEventListener("DOMContentLoaded", function () {
+      console.log("page ready");
+    });
+  </script>
+
+</body>
+</html>

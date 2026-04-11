@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NewsBrewer — Instellingen</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f0f23;
+      --card:      #1a1a2e;
+      --card2:     #16213e;
+      --accent:    #e94560;
+      --accent2:   #c73652;
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --input-bg:  #2d3748;
+      --border:    #334155;
+      --success:   #10b981;
+      --error:     #ef4444;
+      --radius:    10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Flash banner ── */
+    .flash {
+      background: var(--success);
+      color: #fff;
+      padding: 14px 24px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+    }
+    .flash.error { background: var(--error); }
+
+    /* ── Page layout ── */
+    .page-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    header p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── Section cards ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Form grid ── */
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    @media (max-width: 600px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    textarea {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      padding: 9px 12px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+      line-height: 1.5;
+    }
+
+    /* Range slider */
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      padding: 0;
+      border: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .range-val {
+      min-width: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-align: right;
+    }
+
+    /* ── Account block ── */
+    .account-block {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+    .account-block:last-child { margin-bottom: 0; }
+    .account-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    /* ── Test IMAP button ── */
+    .btn-test {
+      margin-top: 12px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .btn-test:hover { background: var(--accent); color: #fff; }
+    .btn-test:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .test-result {
+      margin-top: 10px;
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: none;
+    }
+    .test-result.ok  { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+    .test-result.err { background: rgba(239,68,68,0.15);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* ── Cron preview ── */
+    .cron-preview {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      min-height: 18px;
+    }
+
+    /* ── Help text ── */
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Action bar ── */
+    .action-bar {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding-top: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover { background: var(--accent2); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-secondary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .send-result {
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      display: none;
+    }
+    .send-result.ok  { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+    .send-result.err { background: rgba(239,68,68,0.15);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+{% if request.args.get('saved') %}
+<div class="flash">Instellingen opgeslagen</div>
+{% endif %}
+
+<div class="page-wrap">
+
+  <header>
+    <h1>NewsBrewer — Instellingen</h1>
+    <p>Beheer je configuratie zonder YAML of .env bestanden te bewerken</p>
+  </header>
+
+  <form method="POST" action="/save" id="main-form">
+
+    <!-- ── 1. Email accounts ── -->
+    <div class="card">
+      <div class="card-title">Email accounts</div>
+
+      <!-- Account 1 -->
+      <div class="account-block">
+        <div class="account-label">Account 1</div>
+        <div class="grid grid-3">
+          <div class="field" style="grid-column: span 2;">
+            <label for="account_1_email">Email adres</label>
+            <input type="email" id="account_1_email" name="account_1_email"
+                   value="{{ config.account_1_email }}" placeholder="jij@gmail.com" />
+          </div>
+          <div class="field">
+            <label for="account_1_provider">Provider</label>
+            <select id="account_1_provider">
+              <option value="imap.gmail.com">Gmail</option>
+              <option value="outlook.office365.com">Outlook</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-2" style="margin-top:12px;">
+          <div class="field">
+            <label for="account_1_password">App-wachtwoord</label>
+            <input type="password" id="account_1_password" name="account_1_password"
+                   value="{{ config.account_1_password }}" placeholder="xxxx xxxx xxxx xxxx" />
+          </div>
+        </div>
+        <button type="button" class="btn-test" onclick="testImap(1)">
+          Verbinding testen
+        </button>
+        <div class="test-result" id="test-result-1"></div>
+      </div>
+
+      <!-- Account 2 -->
+      <div class="account-block">
+        <div class="account-label">Account 2 (optioneel)</div>
+        <div class="grid grid-3">
+          <div class="field" style="grid-column: span 2;">
+            <label for="account_2_email">Email adres</label>
+            <input type="email" id="account_2_email" name="account_2_email"
+                   value="{{ config.account_2_email }}" placeholder="jij@outlook.com" />
+          </div>
+          <div class="field">
+            <label for="account_2_provider">Provider</label>
+            <select id="account_2_provider">
+              <option value="imap.gmail.com">Gmail</option>
+              <option value="outlook.office365.com" selected>Outlook</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-2" style="margin-top:12px;">
+          <div class="field">
+            <label for="account_2_password">App-wachtwoord</label>
+            <input type="password" id="account_2_password" name="account_2_password"
+                   value="{{ config.account_2_password }}" placeholder="xxxx xxxx xxxx xxxx" />
+          </div>
+        </div>
+        <button type="button" class="btn-test" onclick="testImap(2)">
+          Verbinding testen
+        </button>
+        <div class="test-result" id="test-result-2"></div>
+      </div>
+    </div>
+
+    <!-- ── 2. Digest ontvangst ── -->
+    <div class="card">
+      <div class="card-title">Digest ontvangst</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="digest_recipient">Ontvanger email</label>
+          <input type="email" id="digest_recipient" name="digest_recipient"
+                 value="{{ config.digest_recipient }}" placeholder="jij@gmail.com" />
+          <span class="hint">Naar dit adres wordt de dagelijkse digest verstuurd</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3. SMTP ── -->
+    <div class="card">
+      <div class="card-title">SMTP — Verzendserver</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="smtp_server">SMTP server</label>
+          <input type="text" id="smtp_server" name="smtp_server"
+                 value="{{ config.smtp_server }}" placeholder="smtp.gmail.com" />
+        </div>
+        <div class="field">
+          <label for="smtp_port">SMTP poort</label>
+          <input type="number" id="smtp_port" name="smtp_port"
+                 value="{{ config.smtp_port }}" min="1" max="65535" />
+        </div>
+        <div class="field">
+          <label for="smtp_email">SMTP email (afzender)</label>
+          <input type="email" id="smtp_email" name="smtp_email"
+                 value="{{ config.smtp_email }}" placeholder="jij@gmail.com" />
+        </div>
+        <div class="field">
+          <label for="smtp_password">SMTP wachtwoord / app-wachtwoord</label>
+          <input type="password" id="smtp_password" name="smtp_password"
+                 value="{{ config.smtp_password }}" placeholder="xxxx xxxx xxxx xxxx" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4. AI Focus ── -->
+    <div class="card">
+      <div class="card-title">AI Focus — Relevantie</div>
+      <div class="grid">
+        <div class="field">
+          <label for="interesting_topics">Interessante onderwerpen</label>
+          <textarea id="interesting_topics" name="interesting_topics"
+                    placeholder="Één onderwerp per regel">{{ config.interesting_topics }}</textarea>
+          <span class="hint">Eén onderwerp per regel — hoge relevantie score</span>
+        </div>
+        <div class="field">
+          <label for="not_interesting_topics">Niet-interessante onderwerpen</label>
+          <textarea id="not_interesting_topics" name="not_interesting_topics"
+                    placeholder="Één onderwerp per regel">{{ config.not_interesting_topics }}</textarea>
+          <span class="hint">Eén onderwerp per regel — lage relevantie score</span>
+        </div>
+        <div class="grid grid-2">
+          <div class="field">
+            <label for="min_relevance_score">Minimale relevantiescore</label>
+            <div class="range-row">
+              <input type="range" id="min_relevance_score" name="min_relevance_score"
+                     min="1" max="10" step="0.5"
+                     value="{{ config.min_relevance_score }}"
+                     oninput="document.getElementById('score-val').textContent = this.value" />
+              <span class="range-val" id="score-val">{{ config.min_relevance_score }}</span>
+            </div>
+            <span class="hint">Artikelen onder deze score worden uitgefilterd</span>
+          </div>
+          <div class="field">
+            <label for="language">Voorkeurstaal</label>
+            <select id="language" name="language">
+              <option value="nl" {% if config.language == 'nl' %}selected{% endif %}>Nederlands (nl)</option>
+              <option value="en" {% if config.language == 'en' %}selected{% endif %}>English (en)</option>
+              <option value="fr" {% if config.language == 'fr' %}selected{% endif %}>Français (fr)</option>
+              <option value="de" {% if config.language == 'de' %}selected{% endif %}>Deutsch (de)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 5. Model ── -->
+    <div class="card">
+      <div class="card-title">AI Model</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="model_name">Model</label>
+          <select id="model_name" name="model_name">
+            <option value="gpt-4o-mini" {% if config.model_name == 'gpt-4o-mini' %}selected{% endif %}>gpt-4o-mini (aanbevolen)</option>
+            <option value="gpt-4o" {% if config.model_name == 'gpt-4o' %}selected{% endif %}>gpt-4o</option>
+          </select>
+          <span class="hint">Via GitHub Models — provider is altijd "github_models"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. Planning ── -->
+    <div class="card">
+      <div class="card-title">Planning</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="schedule">Cron schema</label>
+          <input type="text" id="schedule" name="schedule"
+                 value="{{ config.schedule }}" placeholder="0 6 * * *"
+                 oninput="updateCronPreview(this.value)" />
+          <div class="cron-preview" id="cron-preview"></div>
+          <span class="hint">Formaat: minuut uur dag maand weekdag</span>
+        </div>
+        <div class="field">
+          <label for="timezone">Tijdzone</label>
+          <select id="timezone" name="timezone">
+            {% set tzones = [
+              'Europe/Brussels', 'Europe/Amsterdam', 'Europe/Paris',
+              'Europe/London', 'Europe/Berlin', 'America/New_York',
+              'America/Chicago', 'America/Denver', 'America/Los_Angeles',
+              'America/Toronto', 'Asia/Tokyo', 'Asia/Shanghai',
+              'Australia/Sydney', 'UTC'
+            ] %}
+            {% for tz in tzones %}
+            <option value="{{ tz }}" {% if config.timezone == tz %}selected{% endif %}>{{ tz }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="max_articles">Max artikelen per digest</label>
+          <input type="number" id="max_articles" name="max_articles"
+                 value="{{ config.max_articles }}" min="1" max="50" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 7. GitHub ── -->
+    <div class="card">
+      <div class="card-title">GitHub</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="github_token">GitHub Token</label>
+          <input type="password" id="github_token" name="github_token"
+                 value="{{ config.github_token }}" placeholder="ghp_..." />
+          <span class="hint">Vereist voor GitHub Models API (LLM-toegang)</span>
+        </div>
+        <div class="field">
+          <label for="github_repo">GitHub Repo</label>
+          <input type="text" id="github_repo" name="github_repo"
+                 value="{{ config.github_repo }}" placeholder="gebruiker/repo-naam" />
+          <span class="hint">Optioneel — voor GitHub Actions integratie</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 8. BREW keyword ── -->
+    <div class="card">
+      <div class="card-title">Handmatig BREW trefwoord</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="manual_keyword">Trefwoord</label>
+          <input type="text" id="manual_keyword" name="manual_keyword"
+                 value="{{ config.manual_keyword }}" placeholder="BREW" />
+          <span class="hint">Email met dit woord in het onderwerp triggert een handmatige digest</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Action buttons ── -->
+    <div class="card">
+      <div class="action-bar">
+        <button type="submit" class="btn-primary">Opslaan</button>
+        <button type="button" class="btn-secondary" id="send-test-btn" onclick="sendTest()">
+          Stuur testmail
+        </button>
+        <div class="send-result" id="send-result"></div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  // ── Cron preview ──────────────────────────────────────────────────────────
+  const DAYS = ['zo','ma','di','wo','do','vr','za'];
+  const MONTHS = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+
+  function updateCronPreview(val) {
+    const el = document.getElementById('cron-preview');
+    try {
+      const parts = val.trim().split(/\s+/);
+      if (parts.length !== 5) { el.textContent = ''; return; }
+      const [min, hr, dom, mon, dow] = parts;
+
+      let desc = '';
+
+      // Time
+      if (hr !== '*' && min !== '*') {
+        desc += `Elke dag om ${hr.padStart(2,'0')}:${min.padStart(2,'0')}`;
+      } else if (hr !== '*') {
+        desc += `Elk uur ${hr} `;
+      } else {
+        desc += 'Elke minuut';
+      }
+
+      // Day of week
+      if (dow !== '*') {
+        const dayNames = dow.split(',').map(d => DAYS[parseInt(d)] || d).join(', ');
+        desc += ` op ${dayNames}`;
+      }
+
+      // Day of month
+      if (dom !== '*') {
+        desc += ` op dag ${dom} van de maand`;
+      }
+
+      // Month
+      if (mon !== '*') {
+        const monNames = mon.split(',').map(m => MONTHS[parseInt(m)-1] || m).join(', ');
+        desc += ` in ${monNames}`;
+      }
+
+      el.textContent = desc;
+    } catch(e) {
+      el.textContent = '';
+    }
+  }
+
+  // Init cron preview on load
+  updateCronPreview(document.getElementById('schedule').value);
+
+  // ── IMAP test ─────────────────────────────────────────────────────────────
+  function testImap(accountNum) {
+    const email = document.getElementById(`account_${accountNum}_email`).value;
+    const password = document.getElementById(`account_${accountNum}_password`).value;
+    const server = document.getElementById(`account_${accountNum}_provider`).value;
+    const btn = document.querySelector(`#test-result-${accountNum}`).previousElementSibling;
+    const resultEl = document.getElementById(`test-result-${accountNum}`);
+
+    if (!email || !password) {
+      resultEl.className = 'test-result err';
+      resultEl.style.display = 'block';
+      resultEl.textContent = 'Vul email en wachtwoord in';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Testen…';
+    resultEl.style.display = 'none';
+
+    fetch('/test-imap', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password, server })
+    })
+    .then(r => r.json())
+    .then(data => {
+      resultEl.className = 'test-result ' + (data.ok ? 'ok' : 'err');
+      resultEl.textContent = data.message;
+      resultEl.style.display = 'block';
+    })
+    .catch(err => {
+      resultEl.className = 'test-result err';
+      resultEl.textContent = 'Netwerkfout: ' + err.message;
+      resultEl.style.display = 'block';
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = 'Verbinding testen';
+    });
+  }
+
+  // ── Send test email ───────────────────────────────────────────────────────
+  function sendTest() {
+    const btn = document.getElementById('send-test-btn');
+    const resultEl = document.getElementById('send-result');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Versturen…';
+    resultEl.style.display = 'none';
+
+    fetch('/send-test', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({})
+    })
+    .then(r => r.json())
+    .then(data => {
+      resultEl.className = 'send-result ' + (data.ok ? 'ok' : 'err');
+      resultEl.textContent = data.message;
+      resultEl.style.display = 'block';
+    })
+    .catch(err => {
+      resultEl.className = 'send-result err';
+      resultEl.textContent = 'Netwerkfout: ' + err.message;
+      resultEl.style.display = 'block';
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = 'Stuur testmail';
+    });
+  }
+
+  // ── Auto-hide flash after 4s ──────────────────────────────────────────────
+  const flash = document.querySelector('.flash');
+  if (flash) {
+    setTimeout(() => {
+      flash.style.transition = 'opacity 0.5s';
+      flash.style.opacity = '0';
+      setTimeout(() => flash.remove(), 500);
+    }, 4000);
+  }
+</script>
+</body>
+</html>
