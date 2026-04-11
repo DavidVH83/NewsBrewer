@@ -1,5 +1,4 @@
-# User config (contains personal settings)
-config.yml
+# Secrets — never commit
 .env
 
 # Knowledge base (personal data)
