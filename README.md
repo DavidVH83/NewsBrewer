@@ -1,4 +1,4 @@
-# 🍺 NewsBrewer
+# ⚗️ NewsBrewer
 
 > Brew your daily AI knowledge digest from any inbox
 
@@ -57,7 +57,7 @@ Email Inbox(es)
 (renders HTML email, sends via SMTP)
       │
       ▼
-Your Inbox 🍺
+Your Inbox ⚗️
 ```
 
 Each URL found in your newsletters is fetched, its content extracted, and then scored by GPT-4o-mini against the topics you care about (configured in `config.yml`). Articles scoring above your threshold are assembled into a ranked digest and delivered to you.

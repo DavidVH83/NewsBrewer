@@ -169,7 +169,7 @@ def test_build_html_no_courses_section_when_empty() -> None:
 def test_subject_line_format(minimal_config: Config) -> None:
     """_build_subject returns the correct format with count and date.
 
-    Expected pattern: ``🍺 NewsBrewer | Wednesday, April 9 · 5 articles``
+    Expected pattern: ``⚗️ NewsBrewer | Wednesday, April 9 · 5 articles``
     """
     agent = DigestAgent(minimal_config)
     items = [_make_item() for _ in range(5)]
@@ -180,7 +180,7 @@ def test_subject_line_format(minimal_config: Config) -> None:
     assert "NewsBrewer" in subject
     assert "April 9" in subject
     assert "5 articles" in subject
-    assert "🍺" in subject
+    assert "⚗️" in subject
 
 
 def test_subject_line_singular_article(minimal_config: Config) -> None:

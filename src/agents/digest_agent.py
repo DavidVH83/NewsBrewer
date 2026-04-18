@@ -106,7 +106,7 @@ class DigestAgent:
     def _build_subject(self, items: list[DigestItem], today: date) -> str:
         """Construct the email subject line.
 
-        Format: ``🍺 NewsBrewer | Wednesday, April 9 · 5 articles``
+        Format: ``⚗️ NewsBrewer | Wednesday, April 9 · 5 articles``
 
         Args:
             items: The list of digest items — used only for the count.
@@ -120,7 +120,7 @@ class DigestAgent:
         date_part = today.strftime("%A, %B {day}").format(day=today.day)
         count = len(items)
         article_word = "article" if count == 1 else "articles"
-        return f"🍺 NewsBrewer | {date_part} · {count} {article_word}"
+        return f"⚗️ NewsBrewer | {date_part} · {count} {article_word}"
 
     def _send_email(self, html: str, subject: str) -> None:
         """Send the rendered HTML digest via SMTP with STARTTLS.
