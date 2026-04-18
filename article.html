@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Actions vs Claude Code Routines: NewsBrewer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f7f4ef;
+    --accent: #c8410a;
+    --accent2: #1a6b3c;
+    --muted: #6b6560;
+    --rule: #d4cfc8;
+    --code-bg: #1c1c1c;
+    --code-text: #e8e0d5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.75;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 3px solid var(--ink);
+    padding: 2rem 0 0;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem 0;
+  }
+
+  .meta {
+    display: flex;
+    gap: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .meta span { display: flex; align-items: center; gap: 0.4rem; }
+  .meta .tag {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+    max-width: 700px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 580px;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .header-rule {
+    border: none;
+    border-top: 3px solid var(--ink);
+    margin: 0 -2rem;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    border-left: 4px solid var(--accent);
+    padding: 1rem 1.5rem;
+    margin: 2.5rem 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1.5;
+    background: rgba(200, 65, 10, 0.04);
+  }
+
+  /* TYPOGRAPHY */
+  p {
+    font-size: 1.05rem;
+    margin-bottom: 1.4rem;
+    max-width: 680px;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin: 3rem 0 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 2rem 0 0.75rem;
+  }
+
+  /* COMPARISON TABLE */
+  .comparison {
+    margin: 2.5rem 0;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  thead {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  thead th:first-child { width: 35%; }
+
+  tbody tr { border-bottom: 1px solid var(--rule); }
+  tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+
+  td {
+    padding: 0.7rem 1rem;
+    vertical-align: top;
+  }
+
+  td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .yes { color: var(--accent2); font-weight: 500; }
+  .no { color: var(--accent); font-weight: 500; }
+  .warn { color: #b5860d; font-weight: 500; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--code-bg);
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px 4px 0 0;
+    display: inline-block;
+    margin-bottom: -1px;
+    border: 1px solid #333;
+  }
+
+  pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--code-text);
+    white-space: pre-wrap;
+  }
+
+  .c-green { color: #7ec87e; }
+  .c-red { color: #e07070; }
+  .c-yellow { color: #d4b44a; }
+  .c-blue { color: #7aafd4; }
+  .c-muted { color: #666; }
+
+  /* FINDING CARDS */
+  .findings {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .finding-card {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .finding-card.warning { border-left: 4px solid var(--accent); }
+  .finding-card.success { border-left: 4px solid var(--accent2); }
+  .finding-card.neutral { border-left: 4px solid var(--muted); }
+
+  .finding-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+  }
+
+  .finding-card strong {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.35rem;
+  }
+
+  .finding-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+    max-width: none;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    margin: 2rem 0;
+    position: relative;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    align-items: start;
+  }
+
+  .timeline-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    padding-top: 0.15rem;
+    text-align: right;
+    border-right: 2px solid var(--rule);
+    padding-right: 1rem;
+  }
+
+  .timeline-content strong {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+  }
+
+  .timeline-content p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.55;
+    max-width: none;
+  }
+
+  /* VERDICT BOX */
+  .verdict {
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 3rem 0;
+    position: relative;
+    background: white;
+  }
+
+  .verdict-label {
+    position: absolute;
+    top: -0.75rem;
+    left: 1.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+  }
+
+  .verdict h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .verdict p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+
+  /* FOOTER */
+  footer {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-top: 3px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* INLINE CODE */
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82em;
+    background: rgba(0,0,0,0.06);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+
+  /* INTRO SECTION */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .intro-card {
+    padding: 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+  }
+
+  .intro-card .version {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .intro-card strong {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .intro-card p { font-size: 0.88rem; color: var(--muted); margin: 0; max-width: none; }
+
+  @media (max-width: 560px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .timeline-item { grid-template-columns: 1fr; }
+    .timeline-label { text-align: left; border-right: none; border-bottom: 1px solid var(--rule); padding-right: 0; padding-bottom: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="meta">
+    <span class="tag">AI Development</span>
+    <span>April 2026</span>
+    <span>David Van Ham</span>
+    <span>8 min read</span>
+  </div>
+
+  <h1>I Built the Same AI Tool Twice: GitHub Actions vs Claude Code Routines</h1>
+
+  <p class="subtitle">A real-world test of two automation approaches for an AI newsletter digest. Here's what actually happened, including what broke.</p>
+
+  <hr class="header-rule">
+</header>
+
+<main>
+
+  <p>Every day I receive a flood of AI newsletters across Gmail and Outlook. Most of it I never read. I wanted a tool that would do the reading for me, filtering what's relevant, summarizing what matters, and delivering a clean daily digest to my inbox.</p>
+
+  <p>So I built <strong>NewsBrewer</strong>, an open-source AI newsletter digest tool. Then I built it twice: once with GitHub Actions, once with Claude Code Routines, Anthropic's brand-new cloud automation feature launched April 14, 2026.</p>
+
+  <p>This is a hands-on comparison. Not a feature overview, a real test with real failures.</p>
+
+  <div class="pull-quote">
+    "The biggest surprise wasn't what failed. It was <em>why</em> it failed, and what that reveals about how Routines thinks."
+  </div>
+
+  <!-- WHAT IS NEWSBREWER -->
+  <h2>What NewsBrewer Does</h2>
+
+  <p>NewsBrewer connects to Gmail via IMAP, reads newsletter emails from the last 24 hours, fetches full article content, uses AI to filter what's relevant for an AI developer, and sends a formatted HTML digest to your inbox. It also picks up links you manually forward with "BREW:" in the subject line.</p>
+
+  <div class="code-block">
+    <pre><span class="c-muted"># The daily pipeline</span>
+<span class="c-green">Gmail IMAP</span>  →  Extract URLs  →  Fetch articles
+    →  AI filter + summarize  →  Send digest email</pre>
+  </div>
+
+  <p>The tool was built using Claude Code in about 45 minutes: one prompt, six agents working autonomously. But that's a separate story. This article is about what happened when I tried to run the same automation two different ways.</p>
+
+  <div class="intro-grid">
+    <div class="intro-card">
+      <div class="version">Version 1</div>
+      <strong>GitHub Actions</strong>
+      <p>Python code running on GitHub's free CI/CD infrastructure, scheduled via cron. Full SMTP access. Zero cost.</p>
+    </div>
+    <div class="intro-card">
+      <div class="version">Version 2</div>
+      <strong>Claude Code Routines</strong>
+      <p>Anthropic's new cloud automation. Configure a prompt once, run on schedule. No code deployment needed.</p>
+    </div>
+  </div>
+
+  <!-- VERSION 1 -->
+  <h2>Version 1: GitHub Actions</h2>
+
+  <h3>Setup</h3>
+  <p>The GitHub Actions approach requires actual code. Claude Code built the full Python pipeline autonomously from a detailed plan document. Setup involved creating Gmail and Outlook App Passwords, adding them as GitHub Secrets, and configuring a cron workflow.</p>
+
+  <div class="code-block">
+    <pre><span class="c-muted"># .github/workflows/daily_brew.yml</span>
+on:
+  schedule:
+    - cron: <span class="c-yellow">'0 6 * * *'</span>  <span class="c-muted"># 06:00 UTC daily</span>
+  workflow_dispatch:    <span class="c-muted"># Manual trigger for testing</span></pre>
+  </div>
+
+  <p>Total setup time: approximately 45 minutes, including the Claude Code build session. Technical level required: medium. You need to understand GitHub, environment variables, and Python basics.</p>
+
+  <h3>Results after 3 days</h3>
+
+  <div class="findings">
+    <div class="finding-card success">
+      <div class="finding-icon">✅</div>
+      <div>
+        <strong>Gmail reading via IMAP</strong>
+        <p>Connects cleanly using App Password authentication. Filters by sender, extracts URLs from both HTML and plain-text email bodies.</p>
+      </div>
+    </div>
+    <div class="finding-card success">
+      <div class="finding-icon">✅</div>
+      <div>
+        <strong>Email delivery via SMTP</strong>
+        <p>Sends formatted HTML digest to Outlook inbox every morning. Reliable, no issues after 3 consecutive runs.</p>
+      </div>
+    </div>
+    <div class="finding-card success">
+      <div class="finding-icon">✅</div>
+      <div>
+        <strong>AI filtering and summarization</strong>
+        <p>GitHub Models (Llama 4 Scout) filters by relevance, writes 2-3 sentence summaries, flags courses separately. Works well at zero API cost.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>A note on article fetching</h3>
+  <p>Some newsletter platforms block direct HTTP fetches with a 403 error, regardless of which automation approach you use. This is a general web scraping limitation, not specific to GitHub Actions or Routines. The fix is straightforward: use <code>r.jina.ai/[URL]</code> as a reader proxy, or switch to RSS feeds where available. Both approaches handle this the same way.</p>
+
+  <!-- VERSION 2 -->
+  <h2>Version 2: Claude Code Routines</h2>
+
+  <h3>What are Routines?</h3>
+  <p>Routines are Claude Code's new cloud automation feature. You configure a prompt, a repository, and connectors once, then run on a schedule, via API call, or in response to GitHub events. Nothing depends on your laptop being open.</p>
+
+  <p>The appeal for NewsBrewer was obvious: no YAML, no deployment, no GitHub Secrets management. Just describe what you want and set a schedule.</p>
+
+  <h3>Run 1: Routines defaults to building, not running</h3>
+
+  <p>I gave Routines a prompt describing what NewsBrewer should do: read emails, summarize articles, send a digest. The prompt described the system without explicitly telling it to execute the task right now.</p>
+
+  <p>What happened next surprised me.</p>
+
+  <div class="pull-quote">
+    "Claude Code Routines didn't try to run the task. It built the entire application and pushed it to GitHub."
+  </div>
+
+  <p>Instead of executing the digest workflow, the Routine interpreted my prompt as a development task. It wrote a complete Python application with five modules, committed everything to a new branch called <code>claude/elegant-edison-vxPqZ</code>, and opened a pull request.</p>
+
+  <p>This is not a bug. It's a fundamental insight about how Routines work: <strong>Claude Code thinks like a developer by default</strong>. Give it an ambiguous prompt in a coding context, and it will write code, not run a workflow.</p>
+
+  <div class="code-block">
+    <pre><span class="c-muted"># What the Routine created on Run 1</span>
+newsbrewer/
+  <span class="c-green">gmail_fetcher.py</span>     <span class="c-muted"># IMAP → fetch emails (last 24h)</span>
+  <span class="c-green">url_extractor.py</span>     <span class="c-muted"># Extract article URLs</span>
+  <span class="c-green">article_fetcher.py</span>   <span class="c-muted"># Fetch & parse content</span>
+  <span class="c-green">ai_processor.py</span>      <span class="c-muted"># Filter + summarize</span>
+  <span class="c-green">digest_sender.py</span>     <span class="c-muted"># Send HTML email via SMTP</span>
+<span class="c-yellow">Committed to: claude/elegant-edison-vxPqZ</span>
+<span class="c-yellow">Pull request: opened ✓</span></pre>
+  </div>
+
+  <h3>The fix: explicit execution instructions</h3>
+
+  <p>The solution is simple once you understand the root cause. Add explicit instructions to prevent code-writing behavior:</p>
+
+  <div class="code-block">
+    <pre><span class="c-muted"># Essential additions to any execution-focused Routine prompt</span>
+<span class="c-green">Do not create files.</span>
+<span class="c-green">Do not use git.</span>
+<span class="c-green">Do not write code.</span>
+<span class="c-green">Just read, summarize, and send the email.</span>
+<span class="c-green">Report what you found and whether the email was sent.</span></pre>
+  </div>
+
+  <h3>Run 2: The Gmail connector creates drafts, not sends</h3>
+
+  <p>With the corrected prompt, the Routine executed correctly: read Gmail, found 15 articles, filtered to 6 relevant ones, wrote summaries. Then it tried to send the email.</p>
+
+  <p>It couldn't.</p>
+
+  <p>The Gmail connector provides <code>gmail_create_draft</code> but not <code>gmail_send_draft</code>. This is documented in Anthropic's support center:</p>
+
+  <div class="code-block">
+    <pre><span class="c-muted"># From Anthropic's official documentation</span>
+<span class="c-red">"The send function is not enabled — all emails must be</span>
+<span class="c-red"> sent manually through your Gmail account."</span>
+
+<span class="c-muted"># Available tools in Gmail connector</span>
+<span class="c-green">gmail_search_messages</span>    ✓
+<span class="c-green">gmail_read_message</span>       ✓
+<span class="c-green">gmail_create_draft</span>       ✓
+<span class="c-red">gmail_send_draft</span>         ✗  <span class="c-muted"># Does not exist</span>
+<span class="c-red">gmail_send_email</span>         ✗  <span class="c-muted"># Does not exist</span></pre>
+  </div>
+
+  <p>This is a deliberate security decision by Anthropic. Automatically sending emails on behalf of a user is an irreversible action. The digest was saved as a ready-to-send draft in my Gmail inbox instead.</p>
+
+  <h3>Run 3: The SendGrid workaround and why it failed</h3>
+
+  <p>I tried to work around the sending limitation using the SendGrid API, a standard email delivery service with a free tier of 100 emails per day. The idea: the Routine reads Gmail, builds the digest, then calls SendGrid's API to deliver it.</p>
+
+  <p>Storing the API key securely was straightforward. Routines has a built-in custom environment for secrets, similar to GitHub Secrets. The key was stored as <code>SENDGRID_API_KEY</code> in the Routine's environment configuration.</p>
+
+  <p>The call failed with a clear error:</p>
+
+  <div class="code-block">
+    <pre><span class="c-red">403 Host not in allowlist</span>
+<span class="c-muted">"outbound HTTPS to api.sendgrid.com is blocked</span>
+<span class="c-muted"> by the sandbox network policy"</span></pre>
+  </div>
+
+  <p>Claude Code Routines run in a sandboxed cloud environment. Outbound HTTPS to external APIs is blocked by network policy. This isn't a SendGrid configuration issue. It's the Routines execution environment itself.</p>
+
+  <!-- COMPARISON TABLE -->
+  <h2>Side-by-Side Comparison</h2>
+
+  <div class="comparison">
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>GitHub Actions</th>
+          <th>Claude Code Routines</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Setup time</td>
+          <td>~45 minutes</td>
+          <td>~10 minutes</td>
+        </tr>
+        <tr>
+          <td>Technical level</td>
+          <td>Medium (YAML, secrets, Python)</td>
+          <td>Low (fill a form)</td>
+        </tr>
+        <tr>
+          <td>Gmail reading</td>
+          <td><span class="yes">✓ Full IMAP access</span></td>
+          <td><span class="yes">✓ Via Gmail connector</span></td>
+        </tr>
+        <tr>
+          <td>Article fetching</td>
+          <td><span class="warn">⚠ Some platforms block fetches (403)</span></td>
+          <td><span class="warn">⚠ Same limitation applies</span></td>
+        </tr>
+        <tr>
+          <td>AI summarization</td>
+          <td><span class="yes">✓ GitHub Models (free)</span></td>
+          <td><span class="yes">✓ Claude Sonnet (subscription)</span></td>
+        </tr>
+        <tr>
+          <td>Email sending</td>
+          <td><span class="yes">✓ Full SMTP control</span></td>
+          <td><span class="no">✗ Draft only, no send</span></td>
+        </tr>
+        <tr>
+          <td>External APIs</td>
+          <td><span class="yes">✓ Unrestricted</span></td>
+          <td><span class="no">✗ Blocked by sandbox</span></td>
+        </tr>
+        <tr>
+          <td>Cost</td>
+          <td>€0 (free tier)</td>
+          <td>Subscription quota</td>
+        </tr>
+        <tr>
+          <td>Daily limit</td>
+          <td>2,000 min/month free</td>
+          <td>Pro: 5/day, Max: 15/day</td>
+        </tr>
+        <tr>
+          <td>Runs without laptop</td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="yes">✓</span></td>
+        </tr>
+        <tr>
+          <td>Open-source shareable</td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="no">✗ (prompt is personal)</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- KEY INSIGHTS -->
+  <h2>Three Things I Learned</h2>
+
+  <h3>1. Routines defaults to developer mode</h3>
+  <p>If your prompt could be interpreted as a software specification, Routines will build the software. This is powerful for code-generation workflows, and a footgun for execution workflows. Always add explicit "do not write code" instructions when you want Routines to act, not build.</p>
+
+  <h3>2. The sandbox is more restricted than expected</h3>
+  <p>Routines can read from connected services via connectors, but outbound HTTPS to arbitrary external APIs is blocked. This makes sense from a security perspective: autonomous agents calling external APIs without review is genuinely risky. But it limits what Routines can do today as a general automation platform.</p>
+
+  <h3>3. The Gmail connector is read-only by design</h3>
+  <p>The inability to send email is not a gap waiting to be filled. It's a deliberate choice. Anthropic requires explicit user action to send emails. For a newsletter digest that's meant to run unattended, this is a fundamental mismatch with the use case.</p>
+
+  <!-- WHEN TO USE WHICH -->
+  <h2>When to Use Which</h2>
+
+  <div class="verdict">
+    <div class="verdict-label">Use GitHub Actions when</div>
+    <h3>You need full autonomy and control</h3>
+    <p>Email delivery, external API calls, open-source sharing, no daily limits, and zero cost make GitHub Actions the right choice for production automations that run unattended. The setup is more technical, but you own the entire pipeline.</p>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-label">Use Routines when</div>
+    <h3>You want to prototype fast with connected services</h3>
+    <p>Routines shine for workflows that live entirely within Claude's connector ecosystem — summarizing Slack threads, triaging GitHub issues, analyzing Drive documents. If your automation doesn't need to send email or call external APIs, Routines is dramatically faster to set up and iterate on.</p>
+  </div>
+
+  <!-- TIMELINE -->
+  <h2>What Happened, Step by Step</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-label">Day 1 to 3</div>
+      <div class="timeline-content">
+        <strong>GitHub Actions version: working</strong>
+        <p>Three consecutive daily digests received in Outlook. Some newsletter platforms blocked article fetches (403), summaries fell back to email teasers. All other sources working correctly.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">Run 1</div>
+      <div class="timeline-content">
+        <strong>Routines built an app instead of running one</strong>
+        <p>Ambiguous prompt led to a full Python application being written, committed, and a PR opened on GitHub. The lesson: describe what to do, not what to build.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">Run 2</div>
+      <div class="timeline-content">
+        <strong>Correct execution, draft saved</strong>
+        <p>With explicit instructions added: Gmail read, 15 articles found, 6 summarized. Email saved as Gmail draft. Connector cannot send.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">Run 3</div>
+      <div class="timeline-content">
+        <strong>SendGrid workaround: sandbox blocks external calls</strong>
+        <p>API key correctly configured in Routine environment. Outbound HTTPS to api.sendgrid.com blocked by sandbox network policy. Digest saved as draft again.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <h2>Conclusion</h2>
+
+  <p>Routines is a genuinely exciting tool. The setup experience is dramatically simpler than GitHub Actions, and for the right use cases (code review automation, issue triage, document analysis), it will be transformative.</p>
+
+  <p>But for email automation specifically, it's not ready yet. The combination of a read-only Gmail connector and a sandboxed network environment means fully autonomous email delivery isn't possible today.</p>
+
+  <p>For NewsBrewer, GitHub Actions remains the right choice. It works, it's free, and it gives full control over the pipeline.</p>
+
+  <div class="pull-quote">
+    "Routines is Claude Code's most ambitious feature yet. The sandbox limitations are real, but they're also version 1.0 on day one of a research preview."
+  </div>
+
+  <p>I'll be watching the connector capabilities closely. The moment Gmail gets a send tool, the Routines version becomes far more compelling.</p>
+
+  <p>NewsBrewer is open source. You can find the GitHub Actions version, the build plan, and everything discussed in this article at the link below.</p>
+
+  <p style="margin-top:1.5rem;">
+    <a href="https://github.com/DavidVH83/NewsBrewer" style="font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--accent);text-decoration:none;border-bottom:2px solid var(--accent);padding-bottom:2px;">
+      → NewsBrewer on GitHub
+    </a>
+  </p>
+
+</main>
+
+<footer>
+  <div class="footer-brand">NewsBrewer</div>
+  <div class="footer-links">
+    <a href="https://github.com/DavidVH83/NewsBrewer">GitHub Repository</a>
+    <a href="https://www.linkedin.com/in/david-van-ham-5a54b7184">Follow on LinkedIn</a>
+  </div>
+</footer>
+
+</body>
+</html>
