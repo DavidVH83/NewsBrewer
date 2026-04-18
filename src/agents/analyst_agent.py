@@ -15,6 +15,7 @@ Usage::
 
 import json
 import re
+import time
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -202,6 +203,7 @@ class AnalystAgent:
             if digest_item is not None:
                 self._db.insert(digest_item)
                 results.append(digest_item)
+            time.sleep(1.5)
 
         results.sort(key=lambda item: item.relevance_score, reverse=True)
         logger.info(

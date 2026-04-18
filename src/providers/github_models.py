@@ -65,21 +65,39 @@ class GitHubModelsProvider:
             The assistant's reply as a plain string.  Returns an empty string
             if any exception occurs during the API call.
         """
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-                temperature=0.3,
-                max_tokens=max_tokens,
-            )
-            content = response.choices[0].message.content
-            return content if content is not None else ""
-        except Exception as exc:
-            logger.error("GitHub Models API call failed: %s", exc)
-            return ""
+        import time
+
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+
+        for attempt in (1, 2):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=0.3,
+                    max_tokens=max_tokens,
+                )
+                content = response.choices[0].message.content
+                if content:
+                    return content
+                # Empty response — retry once after a short wait.
+                if attempt == 1:
+                    logger.warning("Empty response from API (attempt %d) — retrying in 3s", attempt)
+                    time.sleep(3)
+                else:
+                    logger.warning("Empty response from API after retry — giving up")
+                    return ""
+            except Exception as exc:
+                if attempt == 1:
+                    logger.warning("GitHub Models API call failed (attempt %d): %s — retrying in 3s", attempt, exc)
+                    time.sleep(3)
+                else:
+                    logger.error("GitHub Models API call failed after retry: %s", exc)
+                    return ""
+        return ""
 
     def generate_narrative(self, digest_items: list, language: str = "nl") -> str:
         """Generate one flowing narrative text from multiple digest items.
