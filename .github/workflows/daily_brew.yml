@@ -23,7 +23,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Create config from secret
-        run: echo "${{ secrets.CONFIG_YML }}" > config.yml
+        run: echo "$CONFIG_YML" > config.yml
+        env:
+          CONFIG_YML: ${{ secrets.CONFIG_YML }}
 
       - name: Run NewsBrewer
         env:
