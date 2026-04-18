@@ -47,7 +47,7 @@ def build_digest_html(
         digest_date: The date to display in the email header and subject.
             Defaults to today's date if not provided.
         github_repo: GitHub repository in ``owner/repo`` format (e.g.
-            ``davidvanham83/newsbrewer``).  When non-empty, rating links are
+            ``your-username/newsbrewer``).  When non-empty, rating links are
             rendered on each article card.  Defaults to ``""`` (no links).
         narrative_html: Pre-rendered HTML narrative string.  When non-empty,
             the template shows the flowing narrative and a compact article
