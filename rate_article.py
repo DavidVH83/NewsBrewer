@@ -39,7 +39,7 @@ def main() -> None:
     db = KnowledgeDatabase("data/knowledge_base.db")
     db.save_rating(url=args.url, rating=rating_value)
 
-    label = "Goed (+1)" if rating_value == 1 else "Niet relevant (-1)"
+    label = "Good (+1)" if rating_value == 1 else "Not relevant (-1)"
     print(f"Rating saved: {label}")
     print(f"URL: {args.url}")
 

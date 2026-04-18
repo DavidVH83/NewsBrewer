@@ -61,11 +61,11 @@
         <!-- Rating links -->
         {% if github_repo %}
         <div style="margin-top: 10px; font-size: 12px; color: #718096;">
-          Beoordeel dit artikel:
+          Rate this article:
           <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-good&body={{ item.url | urlencode }}&labels=rating"
-             style="color: #48bb78; text-decoration: none; margin-left: 8px;">👍 Goed</a>
+             style="color: #48bb78; text-decoration: none; margin-left: 8px;">👍 Good</a>
           <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-bad&body={{ item.url | urlencode }}&labels=rating"
-             style="color: #fc8181; text-decoration: none; margin-left: 8px;">👎 Niet relevant</a>
+             style="color: #fc8181; text-decoration: none; margin-left: 8px;">👎 Not relevant</a>
         </div>
         {% endif %}
       </div>
@@ -90,7 +90,7 @@
 
     <!-- Compact article index -->
     <div style="background:#f7fafc;padding:20px 40px 24px;">
-      <h3 style="color:#4a5568;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin:0 0 15px;">Bronartikelen</h3>
+      <h3 style="color:#4a5568;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin:0 0 15px;">Source articles</h3>
       {% for item in all_items %}
       {% if not item.is_course %}
       <div style="padding:8px 0;border-bottom:1px solid #e2e8f0;overflow:hidden;">
@@ -153,11 +153,11 @@
         <!-- Rating links -->
         {% if github_repo %}
         <div style="margin-top: 10px; font-size: 12px; color: #718096;">
-          Beoordeel dit artikel:
+          Rate this article:
           <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-good&body={{ item.url | urlencode }}&labels=rating"
-             style="color: #48bb78; text-decoration: none; margin-left: 8px;">👍 Goed</a>
+             style="color: #48bb78; text-decoration: none; margin-left: 8px;">👍 Good</a>
           <a href="https://github.com/{{ github_repo }}/issues/new?title=rate-bad&body={{ item.url | urlencode }}&labels=rating"
-             style="color: #fc8181; text-decoration: none; margin-left: 8px;">👎 Niet relevant</a>
+             style="color: #fc8181; text-decoration: none; margin-left: 8px;">👎 Not relevant</a>
         </div>
         {% endif %}
       </div>

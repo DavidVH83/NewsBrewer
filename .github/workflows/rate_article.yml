@@ -64,12 +64,12 @@ jobs:
         with:
           script: |
             const title = context.payload.issue.title;
-            const rating = title.includes('good') ? '👍 Goed' : '👎 Niet relevant';
+            const rating = title.includes('good') ? '👍 Good' : '👎 Not relevant';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.issue.number,
-              body: `✅ Rating opgeslagen: **${rating}**\n\nBedankt voor je feedback! De AI past zijn aanbevelingen aan op basis van jouw beoordeling.`
+              body: `✅ Rating saved: **${rating}**\n\nThanks for your feedback! The AI will adjust its recommendations based on your rating.`
             });
             await github.rest.issues.update({
               owner: context.repo.owner,

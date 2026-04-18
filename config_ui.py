@@ -145,11 +145,11 @@ def test_imap():
         mail = connect(server=server, port=993, email=data["email"], password=data["password"])
         if mail:
             disconnect(mail)
-            return jsonify({"ok": True, "message": f"Verbinding geslaagd met {server}"})
+            return jsonify({"ok": True, "message": f"Connection successful with {server}"})
         else:
-            return jsonify({"ok": False, "message": "Verbinding mislukt — controleer je email en app-wachtwoord"})
+            return jsonify({"ok": False, "message": "Connection failed — check your email and app password"})
     except Exception as e:
-        return jsonify({"ok": False, "message": f"Fout: {str(e)}"})
+        return jsonify({"ok": False, "message": f"Error: {str(e)}"})
 
 
 @app.route("/send-test", methods=["POST"])
@@ -165,9 +165,9 @@ def send_test():
         items = [
             DigestItem(
                 url="https://anthropic.com/news/claude",
-                title="Test artikel — NewsBrewer werkt correct",
+                title="Test article — NewsBrewer is working correctly",
                 source="anthropic.com",
-                summary="Dit is een testmail van NewsBrewer om te bevestigen dat de configuratie correct is en emails succesvol verstuurd worden.",
+                summary="This is a test email from NewsBrewer confirming that your configuration is correct and emails are being sent successfully.",
                 is_course=False,
                 relevance_score=9.0,
                 tags=["test", "NewsBrewer"],
@@ -175,9 +175,9 @@ def send_test():
             )
         ]
         DigestAgent(config).run(items)
-        return jsonify({"ok": True, "message": f"Testmail verstuurd naar {config.delivery.send_to}"})
+        return jsonify({"ok": True, "message": f"Test email sent to {config.delivery.send_to}"})
     except Exception as e:
-        return jsonify({"ok": False, "message": f"Fout: {str(e)}"})
+        return jsonify({"ok": False, "message": f"Error: {str(e)}"})
 
 
 def open_browser():

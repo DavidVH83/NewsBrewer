@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NewsBrewer — Instellingen</title>
+  <title>NewsBrewer — Settings</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -293,14 +293,14 @@
 <body>
 
 {% if request.args.get('saved') %}
-<div class="flash">Instellingen opgeslagen</div>
+<div class="flash">Settings saved</div>
 {% endif %}
 
 <div class="page-wrap">
 
   <header>
-    <h1>NewsBrewer — Instellingen</h1>
-    <p>Beheer je configuratie zonder YAML of .env bestanden te bewerken</p>
+    <h1>NewsBrewer — Settings</h1>
+    <p>Manage your configuration without editing YAML or .env files</p>
   </header>
 
   <form method="POST" action="/save" id="main-form">
@@ -314,9 +314,9 @@
         <div class="account-label">Account 1</div>
         <div class="grid grid-3">
           <div class="field" style="grid-column: span 2;">
-            <label for="account_1_email">Email adres</label>
+            <label for="account_1_email">Email address</label>
             <input type="email" id="account_1_email" name="account_1_email"
-                   value="{{ config.account_1_email }}" placeholder="jij@gmail.com" />
+                   value="{{ config.account_1_email }}" placeholder="you@gmail.com" />
           </div>
           <div class="field">
             <label for="account_1_provider">Provider</label>
@@ -328,25 +328,25 @@
         </div>
         <div class="grid grid-2" style="margin-top:12px;">
           <div class="field">
-            <label for="account_1_password">App-wachtwoord</label>
+            <label for="account_1_password">App password</label>
             <input type="password" id="account_1_password" name="account_1_password"
                    value="{{ config.account_1_password }}" placeholder="xxxx xxxx xxxx xxxx" />
           </div>
         </div>
         <button type="button" class="btn-test" onclick="testImap(1)">
-          Verbinding testen
+          Test connection
         </button>
         <div class="test-result" id="test-result-1"></div>
       </div>
 
       <!-- Account 2 -->
       <div class="account-block">
-        <div class="account-label">Account 2 (optioneel)</div>
+        <div class="account-label">Account 2 (optional)</div>
         <div class="grid grid-3">
           <div class="field" style="grid-column: span 2;">
-            <label for="account_2_email">Email adres</label>
+            <label for="account_2_email">Email address</label>
             <input type="email" id="account_2_email" name="account_2_email"
-                   value="{{ config.account_2_email }}" placeholder="jij@outlook.com" />
+                   value="{{ config.account_2_email }}" placeholder="you@outlook.com" />
           </div>
           <div class="field">
             <label for="account_2_provider">Provider</label>
@@ -358,34 +358,34 @@
         </div>
         <div class="grid grid-2" style="margin-top:12px;">
           <div class="field">
-            <label for="account_2_password">App-wachtwoord</label>
+            <label for="account_2_password">App password</label>
             <input type="password" id="account_2_password" name="account_2_password"
                    value="{{ config.account_2_password }}" placeholder="xxxx xxxx xxxx xxxx" />
           </div>
         </div>
         <button type="button" class="btn-test" onclick="testImap(2)">
-          Verbinding testen
+          Test connection
         </button>
         <div class="test-result" id="test-result-2"></div>
       </div>
     </div>
 
-    <!-- ── 2. Digest ontvangst ── -->
+    <!-- ── 2. Digest delivery ── -->
     <div class="card">
-      <div class="card-title">Digest ontvangst</div>
+      <div class="card-title">Digest delivery</div>
       <div class="grid grid-2">
         <div class="field">
-          <label for="digest_recipient">Ontvanger email</label>
+          <label for="digest_recipient">Recipient email</label>
           <input type="email" id="digest_recipient" name="digest_recipient"
-                 value="{{ config.digest_recipient }}" placeholder="jij@gmail.com" />
-          <span class="hint">Naar dit adres wordt de dagelijkse digest verstuurd</span>
+                 value="{{ config.digest_recipient }}" placeholder="you@gmail.com" />
+          <span class="hint">The daily digest will be sent to this address</span>
         </div>
       </div>
     </div>
 
     <!-- ── 3. SMTP ── -->
     <div class="card">
-      <div class="card-title">SMTP — Verzendserver</div>
+      <div class="card-title">SMTP — Sending server</div>
       <div class="grid grid-2">
         <div class="field">
           <label for="smtp_server">SMTP server</label>
@@ -393,17 +393,17 @@
                  value="{{ config.smtp_server }}" placeholder="smtp.gmail.com" />
         </div>
         <div class="field">
-          <label for="smtp_port">SMTP poort</label>
+          <label for="smtp_port">SMTP port</label>
           <input type="number" id="smtp_port" name="smtp_port"
                  value="{{ config.smtp_port }}" min="1" max="65535" />
         </div>
         <div class="field">
-          <label for="smtp_email">SMTP email (afzender)</label>
+          <label for="smtp_email">SMTP email (sender)</label>
           <input type="email" id="smtp_email" name="smtp_email"
-                 value="{{ config.smtp_email }}" placeholder="jij@gmail.com" />
+                 value="{{ config.smtp_email }}" placeholder="you@gmail.com" />
         </div>
         <div class="field">
-          <label for="smtp_password">SMTP wachtwoord / app-wachtwoord</label>
+          <label for="smtp_password">SMTP password / app password</label>
           <input type="password" id="smtp_password" name="smtp_password"
                  value="{{ config.smtp_password }}" placeholder="xxxx xxxx xxxx xxxx" />
         </div>
@@ -412,23 +412,23 @@
 
     <!-- ── 4. AI Focus ── -->
     <div class="card">
-      <div class="card-title">AI Focus — Relevantie</div>
+      <div class="card-title">AI Focus — Relevance</div>
       <div class="grid">
         <div class="field">
-          <label for="interesting_topics">Interessante onderwerpen</label>
+          <label for="interesting_topics">Interesting topics</label>
           <textarea id="interesting_topics" name="interesting_topics"
-                    placeholder="Één onderwerp per regel">{{ config.interesting_topics }}</textarea>
-          <span class="hint">Eén onderwerp per regel — hoge relevantie score</span>
+                    placeholder="One topic per line">{{ config.interesting_topics }}</textarea>
+          <span class="hint">One topic per line — high relevance score</span>
         </div>
         <div class="field">
-          <label for="not_interesting_topics">Niet-interessante onderwerpen</label>
+          <label for="not_interesting_topics">Not interesting topics</label>
           <textarea id="not_interesting_topics" name="not_interesting_topics"
-                    placeholder="Één onderwerp per regel">{{ config.not_interesting_topics }}</textarea>
-          <span class="hint">Eén onderwerp per regel — lage relevantie score</span>
+                    placeholder="One topic per line">{{ config.not_interesting_topics }}</textarea>
+          <span class="hint">One topic per line — low relevance score</span>
         </div>
         <div class="grid grid-2">
           <div class="field">
-            <label for="min_relevance_score">Minimale relevantiescore</label>
+            <label for="min_relevance_score">Minimum relevance score</label>
             <div class="range-row">
               <input type="range" id="min_relevance_score" name="min_relevance_score"
                      min="1" max="10" step="0.5"
@@ -436,10 +436,10 @@
                      oninput="document.getElementById('score-val').textContent = this.value" />
               <span class="range-val" id="score-val">{{ config.min_relevance_score }}</span>
             </div>
-            <span class="hint">Artikelen onder deze score worden uitgefilterd</span>
+            <span class="hint">Articles below this score will be filtered out</span>
           </div>
           <div class="field">
-            <label for="language">Voorkeurstaal</label>
+            <label for="language">Preferred language</label>
             <select id="language" name="language">
               <option value="nl" {% if config.language == 'nl' %}selected{% endif %}>Nederlands (nl)</option>
               <option value="en" {% if config.language == 'en' %}selected{% endif %}>English (en)</option>
@@ -458,28 +458,28 @@
         <div class="field">
           <label for="model_name">Model</label>
           <select id="model_name" name="model_name">
-            <option value="gpt-4o-mini" {% if config.model_name == 'gpt-4o-mini' %}selected{% endif %}>gpt-4o-mini (aanbevolen)</option>
+            <option value="gpt-4o-mini" {% if config.model_name == 'gpt-4o-mini' %}selected{% endif %}>gpt-4o-mini (recommended)</option>
             <option value="gpt-4o" {% if config.model_name == 'gpt-4o' %}selected{% endif %}>gpt-4o</option>
           </select>
-          <span class="hint">Via GitHub Models — provider is altijd "github_models"</span>
+          <span class="hint">Via GitHub Models — provider is always "github_models"</span>
         </div>
       </div>
     </div>
 
-    <!-- ── 6. Planning ── -->
+    <!-- ── 6. Schedule ── -->
     <div class="card">
-      <div class="card-title">Planning</div>
+      <div class="card-title">Schedule</div>
       <div class="grid grid-2">
         <div class="field">
-          <label for="schedule">Cron schema</label>
+          <label for="schedule">Cron schedule</label>
           <input type="text" id="schedule" name="schedule"
                  value="{{ config.schedule }}" placeholder="0 6 * * *"
                  oninput="updateCronPreview(this.value)" />
           <div class="cron-preview" id="cron-preview"></div>
-          <span class="hint">Formaat: minuut uur dag maand weekdag</span>
+          <span class="hint">Format: minute hour day month weekday</span>
         </div>
         <div class="field">
-          <label for="timezone">Tijdzone</label>
+          <label for="timezone">Timezone</label>
           <select id="timezone" name="timezone">
             {% set tzones = [
               'Europe/Brussels', 'Europe/Amsterdam', 'Europe/Paris',
@@ -494,7 +494,7 @@
           </select>
         </div>
         <div class="field">
-          <label for="max_articles">Max artikelen per digest</label>
+          <label for="max_articles">Max articles per digest</label>
           <input type="number" id="max_articles" name="max_articles"
                  value="{{ config.max_articles }}" min="1" max="50" />
         </div>
@@ -509,26 +509,26 @@
           <label for="github_token">GitHub Token</label>
           <input type="password" id="github_token" name="github_token"
                  value="{{ config.github_token }}" placeholder="ghp_..." />
-          <span class="hint">Vereist voor GitHub Models API (LLM-toegang)</span>
+          <span class="hint">Required for GitHub Models API (LLM access)</span>
         </div>
         <div class="field">
           <label for="github_repo">GitHub Repo</label>
           <input type="text" id="github_repo" name="github_repo"
-                 value="{{ config.github_repo }}" placeholder="gebruiker/repo-naam" />
-          <span class="hint">Optioneel — voor GitHub Actions integratie</span>
+                 value="{{ config.github_repo }}" placeholder="username/repo-name" />
+          <span class="hint">Optional — for GitHub Actions integration</span>
         </div>
       </div>
     </div>
 
     <!-- ── 8. BREW keyword ── -->
     <div class="card">
-      <div class="card-title">Handmatig BREW trefwoord</div>
+      <div class="card-title">Manual BREW keyword</div>
       <div class="grid grid-2">
         <div class="field">
-          <label for="manual_keyword">Trefwoord</label>
+          <label for="manual_keyword">Keyword</label>
           <input type="text" id="manual_keyword" name="manual_keyword"
                  value="{{ config.manual_keyword }}" placeholder="BREW" />
-          <span class="hint">Email met dit woord in het onderwerp triggert een handmatige digest</span>
+          <span class="hint">Email with this word in the subject triggers a manual digest</span>
         </div>
       </div>
     </div>
@@ -536,9 +536,9 @@
     <!-- ── Action buttons ── -->
     <div class="card">
       <div class="action-bar">
-        <button type="submit" class="btn-primary">Opslaan</button>
+        <button type="submit" class="btn-primary">Save</button>
         <button type="button" class="btn-secondary" id="send-test-btn" onclick="sendTest()">
-          Stuur testmail
+          Send test email
         </button>
         <div class="send-result" id="send-result"></div>
       </div>
@@ -549,8 +549,8 @@
 
 <script>
   // ── Cron preview ──────────────────────────────────────────────────────────
-  const DAYS = ['zo','ma','di','wo','do','vr','za'];
-  const MONTHS = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
+  const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
   function updateCronPreview(val) {
     const el = document.getElementById('cron-preview');
@@ -563,22 +563,22 @@
 
       // Time
       if (hr !== '*' && min !== '*') {
-        desc += `Elke dag om ${hr.padStart(2,'0')}:${min.padStart(2,'0')}`;
+        desc += `Every day at ${hr.padStart(2,'0')}:${min.padStart(2,'0')}`;
       } else if (hr !== '*') {
-        desc += `Elk uur ${hr} `;
+        desc += `Every hour ${hr} `;
       } else {
-        desc += 'Elke minuut';
+        desc += 'Every minute';
       }
 
       // Day of week
       if (dow !== '*') {
         const dayNames = dow.split(',').map(d => DAYS[parseInt(d)] || d).join(', ');
-        desc += ` op ${dayNames}`;
+        desc += ` on ${dayNames}`;
       }
 
       // Day of month
       if (dom !== '*') {
-        desc += ` op dag ${dom} van de maand`;
+        desc += ` on day ${dom} of the month`;
       }
 
       // Month
@@ -607,12 +607,12 @@
     if (!email || !password) {
       resultEl.className = 'test-result err';
       resultEl.style.display = 'block';
-      resultEl.textContent = 'Vul email en wachtwoord in';
+      resultEl.textContent = 'Please enter email and password';
       return;
     }
 
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Testen…';
+    btn.innerHTML = '<span class="spinner"></span> Testing…';
     resultEl.style.display = 'none';
 
     fetch('/test-imap', {
@@ -628,12 +628,12 @@
     })
     .catch(err => {
       resultEl.className = 'test-result err';
-      resultEl.textContent = 'Netwerkfout: ' + err.message;
+      resultEl.textContent = 'Network error: ' + err.message;
       resultEl.style.display = 'block';
     })
     .finally(() => {
       btn.disabled = false;
-      btn.innerHTML = 'Verbinding testen';
+      btn.innerHTML = 'Test connection';
     });
   }
 
@@ -643,7 +643,7 @@
     const resultEl = document.getElementById('send-result');
 
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Versturen…';
+    btn.innerHTML = '<span class="spinner"></span> Sending…';
     resultEl.style.display = 'none';
 
     fetch('/send-test', {
@@ -659,12 +659,12 @@
     })
     .catch(err => {
       resultEl.className = 'send-result err';
-      resultEl.textContent = 'Netwerkfout: ' + err.message;
+      resultEl.textContent = 'Network error: ' + err.message;
       resultEl.style.display = 'block';
     })
     .finally(() => {
       btn.disabled = false;
-      btn.innerHTML = 'Stuur testmail';
+      btn.innerHTML = 'Send test email';
     });
   }
 

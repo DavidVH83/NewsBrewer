@@ -246,6 +246,8 @@ Full-text search uses SQLite FTS5, so you can use FTS5 query syntax (e.g. `"exac
 newsbrewer/
 ├── main.py                    # Entry point — run the daily brew
 ├── search.py                  # CLI search tool for the knowledge base
+├── wizard.py                  # Interactive setup wizard — configure NewsBrewer step by step
+├── config_ui.py               # Web-based configuration UI — run with: python config_ui.py
 ├── config.example.yml         # Annotated configuration reference
 ├── requirements.txt           # Python dependencies
 ├── pytest.ini                 # Test configuration
