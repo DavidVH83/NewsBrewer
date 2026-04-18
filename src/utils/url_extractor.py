@@ -49,8 +49,6 @@ _NON_CONTENT_DOMAINS: frozenset[str] = frozenset(
         "youtube.com",
         "play.google.com",
         "apps.apple.com",
-        "catawiki.com",
-        "mailing.catawiki.com",
         "trustpilot.com",
         "policy.medium.com",
     }
