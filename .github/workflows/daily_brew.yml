@@ -22,6 +22,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Create config from secret
+        run: echo "${{ secrets.CONFIG_YML }}" > config.yml
+
       - name: Run NewsBrewer
         env:
           ACCOUNT_1_EMAIL: ${{ secrets.ACCOUNT_1_EMAIL }}
@@ -32,7 +35,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           DIGEST_RECIPIENT: ${{ secrets.DIGEST_RECIPIENT }}
           GITHUB_TOKEN: ${{ secrets.MODELS_TOKEN || secrets.GITHUB_TOKEN }}
-          GITHUB_REPO: DavidVH83/NewsBrewer
+          GITHUB_REPO: ${{ secrets.GITHUB_REPO || github.repository }}
         run: python main.py
 
       - name: Upload knowledge base

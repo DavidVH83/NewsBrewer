@@ -125,6 +125,7 @@ In your forked repository, go to **Settings → Secrets and variables → Action
 
 | Secret name | Description |
 |---|---|
+| `CONFIG_YML` | **Required** — paste the full contents of your `config.yml` file as the secret value |
 | `ACCOUNT_1_EMAIL` | Email address for your first newsletter inbox |
 | `ACCOUNT_1_PASSWORD` | App password for that account |
 | `ACCOUNT_2_EMAIL` | *(Optional)* Second inbox email address |
@@ -132,8 +133,11 @@ In your forked repository, go to **Settings → Secrets and variables → Action
 | `SMTP_EMAIL` | Email address used to send the digest |
 | `SMTP_PASSWORD` | App password for the sending account |
 | `DIGEST_RECIPIENT` | Email address where you want to receive the digest |
+| `GITHUB_REPO` | *(Optional)* Your `username/repo` — used for rating links in the digest. Falls back to the current repository automatically. |
 
 `GITHUB_TOKEN` is provided automatically by GitHub Actions — you do not need to add it.
+
+> **Note on `CONFIG_YML`:** Because `config.yml` is git-ignored (it contains your personal topic preferences), the workflow recreates it at runtime from this secret. To set it up: copy your local `config.yml`, go to **Settings → Secrets → Actions → New repository secret**, name it `CONFIG_YML`, and paste the full file contents as the value.
 
 ### 5. Enable GitHub Actions
 
